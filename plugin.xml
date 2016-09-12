@@ -56,6 +56,9 @@
 	                        value="org.eclipse.jdt.core.IJavaElement">  
 	                  </instanceof>
 	                  <instanceof  
+	                        value="org.eclipse.team.ui.synchronize.ISynchronizeModelElement">  
+	                  </instanceof>
+	                  <instanceof  
 	                        value="org.eclipse.core.resources.IFile">  
 	                  </instanceof>
 	               </or>  

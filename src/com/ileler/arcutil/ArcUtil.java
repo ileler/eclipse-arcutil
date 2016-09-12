@@ -54,7 +54,8 @@ public class ArcUtil {
                 for (String commitPath : commitPaths) {
                     if (commitPath == null || "".equals(commitPath.trim()))     continue;
                     boolean invalid = false;
-                    if (!commitPath.startsWith(arcConfigPath) || !new File(commitPath).exists() || !new File(commitPath).isFile()) {
+//                    || (new File(commitPath).exists() && new File(commitPath).isDirectory())
+                    if (!commitPath.startsWith(arcConfigPath)) {
                         invalid = true;
                     }
                     if (!invalid) {

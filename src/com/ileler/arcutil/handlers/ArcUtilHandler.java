@@ -13,6 +13,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -32,9 +33,7 @@ public class ArcUtilHandler extends AbstractHandler {
 	        Object obj = ((IStructuredSelection) sel).getFirstElement();  
 	        String firstSelPath = null;  
 
-	        if (obj instanceof IResource) {  
-	            firstSelPath = ((IResource) obj).getLocation().toOSString();  
-	        }  
+	        firstSelPath = getSelPath(obj); 
 	        if (firstSelPath != null) {  
 	            try {  
 	                String cfgPath = getCfgPath(new File(firstSelPath));
@@ -46,14 +45,7 @@ public class ArcUtilHandler extends AbstractHandler {
 	                List<String> paths = new ArrayList<>();
 	                List<?> list = ((IStructuredSelection) sel).toList();
 	                for (Object _sel : list) {
-	                    String path = null;
-	                    if (_sel instanceof IResource) {
-	                        path = ((IResource) _sel).getLocation().toOSString();
-	                    } else if (_sel instanceof IJavaElement) {
-	                        path = ((IJavaElement) _sel).getResource().getLocation().toOSString();
-	                    } else {
-	                        continue;
-	                    }
+	                    String path = getSelPath(_sel);
 	                    if (path != null && !path.equals(cfgPath) && path.startsWith(cfgPath)) {
 	                        paths.add(path);
 	                    }
@@ -78,9 +70,20 @@ public class ArcUtilHandler extends AbstractHandler {
 	    return null;  
 	}  
 	
+	private String getSelPath(Object obj) {
+	    if (obj instanceof IResource) {  
+            return ((IResource) obj).getLocation().toOSString();  
+        } else if (obj instanceof IJavaElement) {
+            return ((IJavaElement) obj).getResource().getLocation().toOSString();
+        } else if (obj instanceof ISynchronizeModelElement) {
+            return ((ISynchronizeModelElement) obj).getResource().getLocation().toOSString();
+        }
+	    return null;
+	}
+	
 	private String getCfgPath(File selected) {
-	    if (selected == null || !selected.exists())    return null;
-	    if (selected.isDirectory()) {
+	    if (selected == null)    return null;
+	    if (selected.exists() && selected.isDirectory()) {
 	        File cfgFile = new File(selected.getPath() + File.separator + CFG_NAME);
 	        if (cfgFile.exists()) {
 	            return cfgFile.getParent();
